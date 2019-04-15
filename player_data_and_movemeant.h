@@ -23,8 +23,14 @@ struct player_data{
     //Plane in which the player is located and can move in
     enum Position_plane player_plane;
 
+    double move_speed;
+    double jump_target;
+    bool jump_active;
+
     //Player postion in the coordiante system
     double  center_x,  center_y,  center_z;
+    //Vek pomeraja
+    double vp_left_right, vp_up_down;
 
 };
 

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "player_data_and_movemeant.h"
 
 struct player_data player;
@@ -38,6 +39,12 @@ void initialize_player()
 {
     player.player_plane = front_xy;
     player.center_x = player.center_y = player.center_z = 0;
+    player.vp_up_down = player.vp_left_right = 0;
+
+    player.move_speed = 0.2;
+
+    player.jump_active = false;
+    player.jump_target = player.center_z;
 
   //  player_initialized = 1;
 }
