@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "player_data_and_movemeant.h"
+#include "terrain.h"
 //#include "player_data_and_movement.c"
 
 #define SPACEBAR 32
@@ -16,9 +17,9 @@ bool pressed_keys[3];
 double acc;
 
 extern struct player_data player;
+extern bool PLAYER_AND_TERRAIN_COLLISION;
 
 int timer_active = 0;
-
 
 static void on_display(void);
 static void on_reshape(int width, int height);
@@ -53,6 +54,12 @@ int main(int argc, char **argv)
     glEnable(GL_DEPTH_TEST);
 
     initialize_player();
+    calcCuboidVertices(1,1,1,1,2, terrainOjbectVertices[0]);
+
+    
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0, 3, 8, 0, 0, 0, 0, 1, 0);
     /* Program ulazi u glavnu petlju. */
     glutMainLoop();
 
@@ -64,9 +71,9 @@ static void on_display()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(-0.3, 10, 3, 0, 0, 0, 0, 1, 0);
+
+
+    
 
 
     glPushMatrix();
@@ -75,9 +82,37 @@ static void on_display()
         player.vp_up_down -= acc;
         glTranslatef(player.center_x, player.center_y, player.center_z);
         glColor3f(1, 0.5, 0);
-        glutSolidCube(1);
+       // drawCuboid(1,1,1, 1, 2 );
+        
 
+ 
+
+    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    glEnableClientState( GL_VERTEX_ARRAY );
+    glVertexPointer( 3, GL_FLOAT, 0, terrainOjbectVertices[0]);
+
+    glDrawArrays( GL_QUADS, 0, 24 );
+    
+    glDisableClientState( GL_VERTEX_ARRAY );
+
+
+
+       // glutSolidCube(1);
     glPopMatrix();
+
+
+    calcCuboidVertices(4,1,1, 1, 2, terrainOjbectVertices[1]);
+
+
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    glEnableClientState( GL_VERTEX_ARRAY );
+    glVertexPointer( 3, GL_FLOAT, 0, terrainOjbectVertices[1]);
+
+    glDrawArrays( GL_QUADS, 0, 24 );
+    
+    glDisableClientState( GL_VERTEX_ARRAY );
+
+
         draw_debug_coosys();
 
         glutSwapBuffers();
@@ -111,7 +146,6 @@ static void on_keyboard(unsigned char key, int x, int y)
     switch(key){
         case 'd':
         case 'D':
-            printf("Detected d\n");
             player.vp_left_right = player.move_speed;   
             pressed_keys[D_PRESS] = true; 
            // glutPostRedisplay();
@@ -137,6 +171,12 @@ static void on_keyboard(unsigned char key, int x, int y)
             }
             glutTimerFunc(10, on_timer, 0);
             //glutPostRedisplay();
+            break;
+        case 'q':
+        case 'Q':
+        case 'r':
+        case 'R':
+            change_plane(key);
             break;
 
 
@@ -189,12 +229,15 @@ static void on_timer(int value)
    
 
    //Ubaciti ovde check za koliziju
-
-    if(player.jump_active) {
-        if(player.center_z+1 > player.jump_target){
-            player.vp_up_down = -0.2;
+    
+   
+        if(player.jump_active) {
+            if(player.center_z+1 > player.jump_target){
+                player.vp_up_down = -0.2;
+            }
         }
-    }
+
+
 
     glutPostRedisplay();
     glutTimerFunc(10, on_timer, 0);
@@ -210,4 +253,6 @@ static void on_reshape(int width, int height)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(60, (float)width / height, 1, 1500);
+   // glOrtho(-20.0, 20.0, -20.0, 20.0, -10.5, 30.5);
+    //Podesi lepo perspektivu, ovo neka bude placeholder
 }

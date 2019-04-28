@@ -1,10 +1,10 @@
 PROGRAM = LookAround
 CC      = gcc
-CFLAGS  = -g -std=c99  -Wall -I/usr/X11R6/include -I/usr/pkg/include
+CFLAGS  = -g -std=c99  -Wall  -I/usr/X11R6/include -I/usr/pkg/include
 LDFLAGS = -L/usr/X11R6/lib -L/usr/pkg/lib
-LDLIBS  = -lglut -lGLU -lGL
+LDLIBS  = -lglut -lGLU -lGL -lm
 
-$(PROGRAM) : main.o player_data_and_movemeant.o
+$(PROGRAM) : main.o player_data_and_movemeant.o terrain.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 main.o : main.c
@@ -13,13 +13,8 @@ main.o : main.c
 player_data_and_movemeant.o: player_data_and_movemeant.c player_data_and_movemeant.h
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
-
-
-# terrain.o : terrain.c terrain.h
-# 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o  $@ $< $(LDLIBS)
-
-
-
+terrain.o: terrain.c terrain.h
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(LDLIBS)
 
 clean:
 	rm *.o

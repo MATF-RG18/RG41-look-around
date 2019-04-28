@@ -1,9 +1,10 @@
 #ifndef PLAYER_DATA_
 #define PLAYER_DATA_
 
-
+#include <stdbool.h>
 
 #define player_initialized 1
+
 
 //Plane in which the player is located and can move in
 enum Position_plane
@@ -35,7 +36,12 @@ struct player_data{
 };
 
 
+struct player_data player;
 
+
+void change_plane(char key);
+
+void rotate_around_y_90(void);
 
 
 
